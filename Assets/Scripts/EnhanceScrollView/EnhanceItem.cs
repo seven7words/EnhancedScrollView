@@ -3,6 +3,8 @@ using System.Collections;
 
 public class EnhanceItem : MonoBehaviour
 {
+    public int dataNumber;
+    public CanvasGroup canvasGroup;
     // Start index
     private int curveOffSetIndex = 0;
     public int CurveOffSetIndex
@@ -31,6 +33,7 @@ public class EnhanceItem : MonoBehaviour
     void Awake()
     {
         mTrs = this.transform;
+        canvasGroup = GetComponent<CanvasGroup>();
         OnAwake();
     }
 
@@ -49,7 +52,8 @@ public class EnhanceItem : MonoBehaviour
         int depthFactor,
         float itemCount,
         float yValue,
-        float scaleValue)
+        float scaleValue,
+        float alphaValue)
     {
         Vector3 targetPos = Vector3.one;
         Vector3 targetScale = Vector3.one;
@@ -57,7 +61,7 @@ public class EnhanceItem : MonoBehaviour
         targetPos.x = xValue;
         targetPos.y = yValue;
         mTrs.localPosition = targetPos;
-
+        canvasGroup.alpha = alphaValue;
         // Set the "depth" of item
         // targetPos.z = depthValue;
         SetItemDepth(depthCurveValue, depthFactor, itemCount);

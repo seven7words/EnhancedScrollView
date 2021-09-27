@@ -96,9 +96,9 @@ public class EnhanceScrollView : MonoBehaviour
         curCenterItem = listEnhanceItems[startCenterIndex];
         curVerticalValue = 0.5f - curCenterItem.CenterOffSet;
         minVerticalValue = curVerticalValue;
-        LerpTweenToTarget(0f, curVerticalValue, false);
         maxVerticalValue = curVerticalValue + (maxNumber - 1) * dFactor;
         currIndex = startCenterIndex;
+        LerpTweenToTarget(0f, curVerticalValue, false);
         // 
         // enable the drag actions
         // 
@@ -121,6 +121,7 @@ public class EnhanceScrollView : MonoBehaviour
             mCurrentDuration = 0.0f;
         }
         enableLerpTween = needTween;
+        
     }
 
     public void DisableLerpTween()
@@ -139,7 +140,24 @@ public class EnhanceScrollView : MonoBehaviour
             float yValue = GetYPosValue(fValue, itemScript.CenterOffSet);
             float scaleValue = GetScaleValue(fValue, itemScript.CenterOffSet);
             float depthCurveValue = depthCurve.Evaluate(fValue + itemScript.CenterOffSet);
-            itemScript.UpdateScrollViewItems(xFixedPositionValue, depthCurveValue, depthFactor, listEnhanceItems.Count, yValue, scaleValue);
+            itemScript.UpdateScrollViewItems(xFixedPositionValue, depthCurveValue, depthFactor, listEnhanceItems.Count, yValue, scaleValue, scaleValue);
+        }
+        int currIndex = (int) ((fValue - minVerticalValue) / dFactor + 0.5f);
+        int index = 0;
+        foreach (var item in listSortedItems)
+        {
+            if (index == 0)
+            {
+                item.dataNumber = currIndex + 1;
+            }else if (index == 1)
+            {
+                item.dataNumber = currIndex;
+            }
+            else
+            {
+                item.dataNumber = currIndex - 1;
+            }
+            index++;
         }
     }
 
@@ -162,6 +180,7 @@ public class EnhanceScrollView : MonoBehaviour
         {
             canChangeItem = true;
             enableLerpTween = false;
+            
             OnTweenOver();
         }
     }
@@ -208,6 +227,7 @@ public class EnhanceScrollView : MonoBehaviour
     // On Drag Move
     public void OnDragEnhanceViewMove(Vector2 delta)
     {
+        
         if (maxVerticalValue - lastHorizontallValue < 0.1f && delta.y > 0)
         {
             return;
@@ -215,12 +235,7 @@ public class EnhanceScrollView : MonoBehaviour
         {
             return;
         }
-        int index =  curCenterItem.CurveOffSetIndex - 1 < 0? 2: curCenterItem.CurveOffSetIndex - 1;
-        if (currIndex != maxNumber - 1)
-        {
-           listEnhanceItems[index - 1 < 0 ? 2: index - 1].gameObject.SetActive(true);
-            listEnhanceItems[index].gameObject.SetActive(true);
-        }
+        
         // In developing
         if (Mathf.Abs(delta.y) > 0.0f)
         {
@@ -228,7 +243,7 @@ public class EnhanceScrollView : MonoBehaviour
             curVerticalValue = Mathf.Min(maxVerticalValue, curVerticalValue);
             curVerticalValue = Mathf.Max(curVerticalValue, minVerticalValue);
            
-          
+           
             LerpTweenToTarget(0.0f, curVerticalValue, false);
         }
     }
@@ -255,12 +270,7 @@ public class EnhanceScrollView : MonoBehaviour
         float target = ((int)curVerticalValue + (tmp - listEnhanceItems[closestIndex].CenterOffSet));
         preCenterItem = curCenterItem;
         curCenterItem = listEnhanceItems[closestIndex];
-        currIndex = (int)(((curVerticalValue - minVerticalValue) / dFactor) + 0.5f);
-        if (currIndex == maxNumber - 1)
-        {
-           int index =  curCenterItem.CurveOffSetIndex - 1 < 0? 2: curCenterItem.CurveOffSetIndex - 1;
-           listEnhanceItems[index].gameObject.SetActive(false);
-        }
+       
         LerpTweenToTarget(originVerticalValue, target, true);
         canChangeItem = false;
     }
