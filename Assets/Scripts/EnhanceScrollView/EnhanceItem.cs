@@ -66,10 +66,10 @@ public class EnhanceItem : MonoBehaviour
         mTrs.localScale = targetScale;
     }
 
-    protected virtual void OnClickEnhanceItem()
-    {
-        EnhanceScrollView.GetInstance.SetHorizontalTargetItemIndex(this);
-    }
+    // protected virtual void OnClickEnhanceItem()
+    // {
+    //     EnhanceScrollView.GetInstance.SetHorizontalTargetItemIndex(this);
+    // }
 
     protected virtual void OnStart()
     {

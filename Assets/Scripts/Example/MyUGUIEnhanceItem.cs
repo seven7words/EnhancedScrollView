@@ -11,14 +11,8 @@ public class MyUGUIEnhanceItem : EnhanceItem
     protected override void OnStart()
     {
         rawImage = GetComponent<RawImage>();
-        uButton = GetComponent<Button>();
-        uButton.onClick.AddListener(OnClickUGUIButton);
     }
 
-    private void OnClickUGUIButton()
-    {
-        OnClickEnhanceItem();
-    }
 
     // Set the item "depth" 2d or 3d
     protected override void SetItemDepth(float depthCurveValue, int depthFactor, float itemCount)

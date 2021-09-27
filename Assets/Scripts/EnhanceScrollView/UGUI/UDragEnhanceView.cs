@@ -11,9 +11,12 @@ public class UDragEnhanceView : EventTrigger
         enhanceScrollView = view;
     }
 
+
     public override void OnBeginDrag(PointerEventData eventData)
     {
         base.OnBeginDrag(eventData);
+        if (enhanceScrollView != null)
+            enhanceScrollView.OnDragEnhanceViewBegin();
     }
 
     public override void OnDrag(PointerEventData eventData)
@@ -27,6 +30,6 @@ public class UDragEnhanceView : EventTrigger
     {
         base.OnEndDrag(eventData);
         if (enhanceScrollView != null)
-            enhanceScrollView.OnDragEnhanceViewEnd();
+            enhanceScrollView.OnDragEnhanceViewEnd(eventData.delta);
     }
 }
