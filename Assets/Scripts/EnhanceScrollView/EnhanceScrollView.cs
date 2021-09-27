@@ -203,62 +203,7 @@ public class EnhanceScrollView : MonoBehaviour
         for (int i = listSortedItems.Count - 1; i >= 0; i--)
             listSortedItems[i].RealIndex = i;
     }
-
-    public void SetHorizontalTargetItemIndex(EnhanceItem selectItem)
-    {
-        if (!canChangeItem)
-            return;
-
-        if (curCenterItem == selectItem)
-            return;
-
-        canChangeItem = false;
-        preCenterItem = curCenterItem;
-        curCenterItem = selectItem;
-
-        // calculate the direction of moving
-        float centerXValue = positionCurve.Evaluate(0.5f) * totalVerticalHeight;
-        bool isRight = false;
-        if (selectItem.transform.localPosition.x > centerXValue)
-            isRight = true;
-
-        // calculate the offset * dFactor
-        int moveIndexCount = GetMoveCurveFactorCount(preCenterItem, selectItem);
-        float dvalue = 0.0f;
-        if (isRight)
-        {
-            dvalue = -dFactor * moveIndexCount;
-        }
-        else
-        {
-            dvalue = dFactor * moveIndexCount;
-        }
-        float originValue = curVerticalValue;
-        LerpTweenToTarget(originValue, curVerticalValue + dvalue, true);
-    }
-
-    // Click the right button to select the next item.
-    public void OnBtnRightClick()
-    {
-        if (!canChangeItem)
-            return;
-        int targetIndex = curCenterItem.CurveOffSetIndex + 1;
-        if (targetIndex > listEnhanceItems.Count - 1)
-            targetIndex = 0;
-        SetHorizontalTargetItemIndex(listEnhanceItems[targetIndex]);
-    }
-
-    // Click the left button the select next next item.
-    public void OnBtnLeftClick()
-    {
-        if (!canChangeItem)
-            return;
-        int targetIndex = curCenterItem.CurveOffSetIndex - 1;
-        if (targetIndex < 0)
-            targetIndex = listEnhanceItems.Count - 1;
-        SetHorizontalTargetItemIndex(listEnhanceItems[targetIndex]);
-    }
-
+    
     public float factor = 0.001f;
     // On Drag Move
     public void OnDragEnhanceViewMove(Vector2 delta)
@@ -270,12 +215,20 @@ public class EnhanceScrollView : MonoBehaviour
         {
             return;
         }
+        int index =  curCenterItem.CurveOffSetIndex - 1 < 0? 2: curCenterItem.CurveOffSetIndex - 1;
+        if (currIndex != maxNumber - 1)
+        {
+           listEnhanceItems[index - 1 < 0 ? 2: index - 1].gameObject.SetActive(true);
+            listEnhanceItems[index].gameObject.SetActive(true);
+        }
         // In developing
         if (Mathf.Abs(delta.y) > 0.0f)
         {
             curVerticalValue += delta.y * factor;
             curVerticalValue = Mathf.Min(maxVerticalValue, curVerticalValue);
             curVerticalValue = Mathf.Max(curVerticalValue, minVerticalValue);
+           
+          
             LerpTweenToTarget(0.0f, curVerticalValue, false);
         }
     }
@@ -297,28 +250,24 @@ public class EnhanceScrollView : MonoBehaviour
                 min = dis;
             }
         }
-        currIndex = (int)(((curVerticalValue - minVerticalValue) / dFactor) + 0.5f);
+        
         originVerticalValue = curVerticalValue;
         float target = ((int)curVerticalValue + (tmp - listEnhanceItems[closestIndex].CenterOffSet));
         preCenterItem = curCenterItem;
         curCenterItem = listEnhanceItems[closestIndex];
-        // if (currIndex == maxNumber - 1)
-        // {
-        //     for (int i = 0; i < listEnhanceItems.Count; i++)
-        //     {
-        //         EnhanceItem item = listEnhanceItems[i];
-        //         if (item != preCenterItem && item != curCenterItem)
-        //         {
-        //             item.gameObject.SetActive(false);
-        //         }
-        //     }
-        // }
+        currIndex = (int)(((curVerticalValue - minVerticalValue) / dFactor) + 0.5f);
+        if (currIndex == maxNumber - 1)
+        {
+           int index =  curCenterItem.CurveOffSetIndex - 1 < 0? 2: curCenterItem.CurveOffSetIndex - 1;
+           listEnhanceItems[index].gameObject.SetActive(false);
+        }
         LerpTweenToTarget(originVerticalValue, target, true);
         canChangeItem = false;
     }
 
     public void OnDragEnhanceViewBegin()
     {
+        
         lastHorizontallValue = curVerticalValue;
     }
 }
