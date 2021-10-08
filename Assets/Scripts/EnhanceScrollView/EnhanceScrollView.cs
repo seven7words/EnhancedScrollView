@@ -191,6 +191,8 @@ public class EnhanceScrollView : MonoBehaviour
             preCenterItem.SetSelectState(false);
         if (curCenterItem != null)
             curCenterItem.SetSelectState(true);
+        
+        
     }
 
     // Get the evaluate value to set item's scale
@@ -235,6 +237,8 @@ public class EnhanceScrollView : MonoBehaviour
         {
             return;
         }
+      
+        
         
         // In developing
         if (Mathf.Abs(delta.y) > 0.0f)
@@ -270,7 +274,6 @@ public class EnhanceScrollView : MonoBehaviour
         float target = ((int)curVerticalValue + (tmp - listEnhanceItems[closestIndex].CenterOffSet));
         preCenterItem = curCenterItem;
         curCenterItem = listEnhanceItems[closestIndex];
-       
         LerpTweenToTarget(originVerticalValue, target, true);
         canChangeItem = false;
     }
